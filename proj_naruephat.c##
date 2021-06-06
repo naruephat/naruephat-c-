@@ -16,7 +16,7 @@ namespace pronownownownownow
     {
         private MySqlConnection databaseConnection()
         {
-            string connectionString = "datasource=127.0.0.1;port=3306;username=root;password=;database=project_c#;";
+            string connectionString = "datasource=127.0.0.1;port=3306;username=root;password=;database=project_c##;";
 
             MySqlConnection conn = new MySqlConnection(connectionString);
 
@@ -29,27 +29,36 @@ namespace pronownownownownow
         int x = 1;
         private void button2_Click(object sender, EventArgs e)
         {
+ 
             MySqlConnection conn = databaseConnection();
             conn.Open();
-            MySqlCommand cmd;
-            cmd = conn.CreateCommand();
-            cmd.CommandText =$"SELECT * FROM users WHERE u_id = \"{textBox1.Text}\" AND u_pass=\"{ textBox2.Text}\"";
-            MySqlDataReader row = cmd.ExecuteReader();
-            if (row.HasRows)
+            MySqlCommand cmd3;
+            cmd3 = conn.CreateCommand();
+            cmd3.CommandText =$"SELECT * FROM users WHERE id = \"{textBox1.Text}\" AND password=\"{ textBox2.Text}\"";
+            MySqlDataReader row = cmd3.ExecuteReader();
+            if (row.HasRows) 
             {
-                MessageBox.Show("เข้าสู่ระบบสำเร็จ");
-                x = 0;
-                Form3 f3 = new Form3();
+                Form5 f3 = new Form5();
+                MySqlConnection conn3 = databaseConnection();
+                conn3.Open();
+                MySqlCommand cmd = new MySqlCommand("SELECT name from users where id=@id", conn3);
+                cmd.Parameters.AddWithValue("@id", (textBox1.Text));
+                MySqlDataReader da = cmd.ExecuteReader();
+                while (da.Read())
+                { f3.nameusers = da.GetValue(0).ToString();
+                  //Program.nameus = da.GetValue(0).ToString();
+                }
                 this.Hide();
                 f3.Show();
-                
             }
+
+
             conn.Close();
             MySqlConnection con = databaseConnection();
             con.Open();
             MySqlCommand cmd1;
             cmd1 = con.CreateCommand();
-            cmd1.CommandText = $"SELECT * FROM admin WHERE id = \"{textBox1.Text}\" AND pass=\"{ textBox2.Text}\"";
+            cmd1.CommandText = $"SELECT * FROM admin WHERE id1 = \"{textBox1.Text}\"AND pass1=\"{ textBox2.Text}\"";
             MySqlDataReader row1 = cmd1.ExecuteReader();
             if (row1.HasRows)
             {
@@ -70,14 +79,15 @@ namespace pronownownownownow
         {
             Form2 f1 = new Form2();
           
-            f1.Show();
+            f1.ShowDialog();
 
         }
     }
-    
+}
+
     
     ###############################################################################/form2_หน้าสมัครสมาชิก/#######################################################################
-    using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -95,7 +105,7 @@ namespace pronownownownownow
         int X = 0;
         private MySqlConnection databaseConnection()
         {
-            string connectionString = "datasource=127.0.0.1;port=3306;username=root;password=;database=project_c#;";
+            string connectionString = "datasource=127.0.0.1;port=3306;username=root;password=;database=project_c##;";
 
             MySqlConnection conn = new MySqlConnection(connectionString);
 
@@ -112,7 +122,7 @@ namespace pronownownownownow
             conn.Open();
             MySqlCommand cmd;
             cmd = conn.CreateCommand();
-            cmd.CommandText = $"SELECT*FROM users WHERE Name =\"{name_text.Text}\"";
+            cmd.CommandText = $"SELECT*FROM users WHERE name =\"{name_text.Text}\"";
             MySqlDataReader row = cmd.ExecuteReader();
             if (row.HasRows)
             {
@@ -124,7 +134,7 @@ namespace pronownownownownow
             conn2.Open();
             MySqlCommand cmd2;
             cmd2 = conn2.CreateCommand();
-            cmd2.CommandText = $"SELECT*FROM users WHERE u_id =\"{id_text.Text}\"";
+            cmd2.CommandText = $"SELECT*FROM users WHERE id =\"{id_text.Text}\"";
             MySqlDataReader row2 = cmd2.ExecuteReader();
             if (row2.HasRows)
             {
@@ -133,6 +143,20 @@ namespace pronownownownownow
 
             }
             conn2.Close();
+            MySqlConnection conn3 = databaseConnection();
+            conn3.Open();
+            MySqlCommand cmd3;
+            cmd3 = conn3.CreateCommand();
+            cmd3.CommandText = $"SELECT*FROM admin WHERE id1 =\"{id_text.Text}\"";
+            MySqlDataReader row3 = cmd3.ExecuteReader();
+            if (row3.HasRows)
+            {
+                MessageBox.Show("IDต้องห้าม");
+                X = 3;
+
+            }
+            conn3.Close();
+
             if (X == 0)
             {
                 if (name_text.Text == "")
@@ -168,7 +192,7 @@ namespace pronownownownownow
             if (X == 0)
             {
                 MySqlConnection con = databaseConnection();
-                String sql = "INSERT INTO users (Name,u_id,u_pass) VALUES('" + name_text.Text + "','" + id_text.Text + "','" + pass_text.Text + "')";
+                String sql = "INSERT INTO users (name,id,password) VALUES('" + name_text.Text + "','" + id_text.Text + "','" + pass_text.Text + "')";
                 MySqlCommand cmd1 = new MySqlCommand(sql, con);
                 con.Open();
                 int rows1 = cmd1.ExecuteNonQuery();
@@ -182,28 +206,14 @@ namespace pronownownownownow
         }
     }
 }
- ###############################################################################/form3_หน้าร้านค้า/#######################################################################
- using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using MySql.Data.MySqlClient;
 
-namespace pronownownownownow
-{
-    public partial class Form3 : Form
+ ###############################################################################/form5_หน้าร้านค้า/#######################################################################
+public partial class Form5 : Form
     {
-        int summ = 0;
-        string po2 = "";
-        int poi2 = 0;
+        int s = 0;
         private MySqlConnection databaseConnection()
         {
-            string connectionString = "datasource=127.0.0.1;port=3306;username=root;password=;database=project_c#;";
+            string connectionString = "datasource=127.0.0.1;port=3306;username=root;password=;database=project_c##;";
 
             MySqlConnection conn = new MySqlConnection(connectionString);
 
@@ -218,7 +228,7 @@ namespace pronownownownownow
             MySqlCommand cmd;
 
             cmd = conn.CreateCommand();
-            cmd.CommandText = "SELECT*FROM admin_st1";
+            cmd.CommandText = "SELECT*FROM admin_st";
 
             MySqlDataAdapter adapter = new MySqlDataAdapter(cmd);
             adapter.Fill(ds);
@@ -226,233 +236,153 @@ namespace pronownownownownow
             conn.Close();
             dataGridView1.DataSource = ds.Tables[0].DefaultView;
         }
-        private void showname()
-        {
-            MySqlConnection conn = databaseConnection();
-            DataSet ds12 = new DataSet();
-            conn.Open();
-
-            MySqlCommand cmd45;
-
-            cmd45 = conn.CreateCommand();
-            cmd45.CommandText = ($"SELECT*FROM users WHERE u_id =\"{textBox8.Text}\"");
-
-            MySqlDataAdapter adapter = new MySqlDataAdapter(cmd45);
-            adapter.Fill(ds12);
-
-            conn.Close();
-            dataGridView2.DataSource = ds12.Tables[0].DefaultView;
-
-        }
-        public Form3()
+        public Form5()
         {
             InitializeComponent();
         }
 
-        private void Form3_Load(object sender, EventArgs e)
+
+        public string nameusers;
+
+
+
+        int change = 0;
+        string sumzen = "";
+
+        private void Form5_Load(object sender, EventArgs e)
         {
-            radioButton12.Checked = true;
-            radioButton10.Checked = true;
-            showname();
+            timer1.Start();
+            radioButton8.Checked=true;
+            panel1.Show();
+            panel2.Show();
+            panel4.Hide();
+            d.Hide();
+            panel5.Hide();
             showEquipment();
+            label8.Hide();
+            label7.Hide();
+            label6.Hide();
+            label10.Hide();
+            label9.Hide();
+            linkLabel1.Hide();
+            linkLabel2.Hide();
+            label2.Hide();
+            label15.Show();
+            label14.Show();
 
         }
-        string co = " ";
-        int sum = 0;
+
         private void button1_Click(object sender, EventArgs e)
         {
-            if (textBox3.Text == "")
-            { MessageBox.Show("กรุณาเลือกสินค้าที่คุณต้องการ"); }
-            else
-            {
-                co = ($"{textBox4.Text}");
-                int number = int.Parse(co);
-                textBox5.Clear();
-                richTextBox1.SelectedText = ($"{textBox3.Text}\t");
-                richTextBox1.SelectedText = ($"{textBox4.Text}  บาท\n");
-                sum = sum + number;
-                textBox5.SelectedText = ($"{sum}");
-            }
+            textBox1.Text = "โปรดใส่จำนวณเงิน";
+            label15.Show();
+            label14.Show();
+            label8.Hide();
+            label7.Hide();
+            label6.Hide();
+            label10.Hide();
+            label9.Hide();
+            panel1.Show();
+            panel3.Show();
+            panel2.Show();
+            panel4.Hide();
+            d.Hide();
+            label1.Text = "ร้านค้า";
+            panel5.Hide();
+            linkLabel1.Hide();
+            linkLabel2.Hide();
+            label2.Hide();
+            linkLabel1.Text = "";
         }
-
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-            dataGridView1.CurrentRow.Selected = true;
-            textBox3.Text = dataGridView1.Rows[e.RowIndex].Cells["name"].FormattedValue.ToString();
-            textBox1.Text = dataGridView1.Rows[e.RowIndex].Cells["Path"].FormattedValue.ToString();
-            textBox2.Text = dataGridView1.Rows[e.RowIndex].Cells["size"].FormattedValue.ToString();
-            textBox4.Text = dataGridView1.Rows[e.RowIndex].Cells["price"].FormattedValue.ToString();
-
-            pictureBox2.ImageLocation = $@"{textBox1.Text}";
-            // C:\Users\Asus\OneDrive\รูปภาพ\โค้ก.jpg 
-        }
-        string co2 = "";
-        int sum1 = 0;
-        int xs = 1;
-        string point1 = "";
-        int pointsum = 0;
-        int summ5 = 0;
-        int pion0 = 0;
 
         private void button2_Click(object sender, EventArgs e)
         {
-            
-            if (textBox6.Text == "")
-            {
-                MessageBox.Show("กรุณาใส่จำนวนเงิน");
-                xs = 0;
-            }
-            if (radioButton11.Checked)
-            {
-                if (textBox9.Text == "")
-                {
-                    MessageBox.Show("กรุณากรอกIDของท่านแล้วคลิกที่รายชื่อของท่านแล้วกดปุ่มตรวจสอบเพื่ออตรวจสิทธิส่วนลด");
-                }
-                if (textBox9.Text != "")
-                {
-                    po2 = ($"{textBox9.Text}");
-                    int poi2 = int.Parse(po2);
-                    for (int i = 0; i < poi2; i += 1)
-                    {
-                        summ5 = summ5 + 1;
-                    }
-                    sum = sum - summ5;
-                    poi2 = poi2 - summ5;
-                    int selectedRow = dataGridView2.CurrentCell.RowIndex;
-                    int editId = Convert.ToInt32(dataGridView2.Rows[selectedRow].Cells["id"].Value);
-                    MySqlConnection conn = databaseConnection();
-                    string sql = "UPDATE users SET  points ='" + pion0 + "'WHERE id='" + editId + "'";
-                    MySqlCommand cmd = new MySqlCommand(sql, conn);
-                    conn.Open();
-                    int rows = cmd.ExecuteNonQuery();
-                }
-
-            }
-            if (radioButton10.Checked)
-            {
-                if (textBox5.Text == "")
-                {
-                    MessageBox.Show("คุณยังไม่ได้เพื่มสินค้าลงตะกร้า");
-                    xs = 0;
-                }
-                if (textBox6.Text != "")
-                {
-                    if (textBox5.Text != "")
-                    {
-                        co2 = ($"{textBox6.Text}");
-                        int number1 = int.Parse(co2);
-                        textBox7.Clear();
-                        sum1 = number1 - sum;
-                        xs = 0;
-                        textBox7.SelectedText = ($"{sum1}");
-                        MessageBox.Show("ทำรายการเสร็จสิ้นขอบคุณที่ใช้บริการ");
-                        textBox1.Clear();
-                        textBox2.Clear();
-                        textBox3.Clear();
-                        textBox4.Clear();
-                        textBox5.Clear();
-                        textBox6.Clear();
-                        textBox8.Clear();
-                        textBox9.Clear();
-                        richTextBox1.Text = "";
-                        showname();
-                        sum = 0;
-                    }
-                }
-            }
-
-            
-            if (radioButton9.Checked)
-            {
-                if (textBox8.Text == "")
-                {
-                    MessageBox.Show("โปรดกรอกIDของท่าน");
-
-                }
-                if (textBox5.Text == "")
-                {
-                    MessageBox.Show("คุณยังไม่ได้เพื่มสินค้าลงตะกร้า");
-                    xs = 0;
-                }
-                if (xs == 1)
-                {
-                    if (textBox5.Text != "")
-                    {
-                        co2 = ($"{textBox6.Text}");
-                        int number1 = int.Parse(co2);
-                        textBox7.Clear();
-                        sum1 = number1 - sum;
-                        xs = 0;
-                        textBox7.SelectedText = ($"{sum1}");
-                        MessageBox.Show("ทำรายการเสร็จสิ้นขอบคุณที่ใช้บริการ");
-                        
-                       
-
-                    }
-                }
-                if (textBox8.Text != "")
-                {
-                    MessageBox.Show($"{sum}");
-                    pointsum = 0;
-                    point1 = ($"{textBox9.Text}");
-                    int pointnum = int.Parse(point1);
-                    for (int i = 0; i < sum; i += 1000)
-                    {
-                        pointsum = pointsum + 5;
-                    }
-                    pointnum = pointnum + pointsum;
-                    int selectedRow = dataGridView2.CurrentCell.RowIndex;
-                    int editId = Convert.ToInt32(dataGridView2.Rows[selectedRow].Cells["id"].Value);
-                    MySqlConnection conn = databaseConnection();
-                    string sql = "UPDATE users SET  points ='" + pointnum + "'WHERE id='" + editId + "'";
-                    MySqlCommand cmd = new MySqlCommand(sql, conn);
-                    conn.Open();
-                    int rows = cmd.ExecuteNonQuery();
-                    conn.Close();
-                   
-                    richTextBox1.Text = "";
-                    textBox1.Clear();
-                    textBox2.Clear();
-                    textBox3.Clear();
-                    textBox4.Clear();
-                    textBox5.Clear();
-                    textBox6.Clear();
-                    textBox8.Clear();
-                    textBox9.Clear();
-                    showname();
-                }
-                xs = 1;
-                sum = 0;
+            linkLabel1.Text = "";
+            label15.Hide();
+            label14.Hide();
+            label8.Hide();
+            label7.Hide();
+            label6.Hide();
+            label10.Hide();
+            label9.Hide();
+            linkLabel1.Hide();
+            linkLabel2.Hide();
+            label2.Hide();
+            d.Show();
+            panel3.Hide();
+            panel4.Show();
+            panel1.Show();
+            label1.Text = "ตะกร้า";
+            panel5.Hide();
+           
 
 
 
+        }
 
-            }
+        private void dataGridView1_CellContentClick_1(object sender, DataGridViewCellEventArgs e)
+        {
+            linkLabel1.Show();
+            linkLabel2.Show();
+            label2.Show();
+            label8.Show();
+            label7.Show();
+            label6.Show();
+            label10.Show();
+            label9.Show();
+            linkLabel1.Text = dataGridView1.Rows[e.RowIndex].Cells["name"].FormattedValue.ToString();
+            linkLabel2.Text = dataGridView1.Rows[e.RowIndex].Cells["size"].FormattedValue.ToString();
+            label2.Text = dataGridView1.Rows[e.RowIndex].Cells["price"].FormattedValue.ToString();
+            label20.Text = dataGridView1.Rows[e.RowIndex].Cells["path"].FormattedValue.ToString();
+            pictureBox2.ImageLocation = $@"{label20.Text}";
+
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
         }
 
         private void radioButton1_CheckedChanged(object sender, EventArgs e)
         {
+            linkLabel1.Text = "";
+            label8.Hide();
+            label7.Hide();
+            label6.Hide();
+            label10.Hide();
+            label9.Hide();
+            linkLabel1.Hide();
+            linkLabel2.Hide();
+            label2.Hide();
             MySqlConnection conn = databaseConnection();
             DataSet ds = new DataSet();
             conn.Open();
             MySqlCommand cmd;
             cmd = conn.CreateCommand();
-            cmd.CommandText = ($"SELECT*FROM admin_st1 WHERE category =\"{radioButton1.Text}\"");
+            cmd.CommandText = ($"SELECT*FROM admin_st WHERE category =\"{radioButton1.Text}\"");
             MySqlDataAdapter adapter = new MySqlDataAdapter(cmd);
             adapter.Fill(ds);
             conn.Close();
             dataGridView1.DataSource = ds.Tables[0].DefaultView;
-
         }
 
         private void radioButton2_CheckedChanged(object sender, EventArgs e)
         {
+            linkLabel1.Text = "";
+            label8.Hide();
+            label7.Hide();
+            label6.Hide();
+            label10.Hide();
+            label9.Hide();
+            linkLabel1.Hide();
+            linkLabel2.Hide();
+            label2.Hide();
             MySqlConnection conn = databaseConnection();
             DataSet ds = new DataSet();
             conn.Open();
             MySqlCommand cmd;
             cmd = conn.CreateCommand();
-            cmd.CommandText = ($"SELECT*FROM admin_st1 WHERE category =\"{radioButton2.Text}\"");
+            cmd.CommandText = ($"SELECT*FROM admin_st WHERE category =\"{radioButton2.Text}\"");
             MySqlDataAdapter adapter = new MySqlDataAdapter(cmd);
             adapter.Fill(ds);
             conn.Close();
@@ -461,12 +391,21 @@ namespace pronownownownownow
 
         private void radioButton4_CheckedChanged(object sender, EventArgs e)
         {
+            linkLabel1.Text = "";
+            label8.Hide();
+            label7.Hide();
+            label6.Hide();
+            label10.Hide();
+            label9.Hide();
+            linkLabel1.Hide();
+            linkLabel2.Hide();
+            label2.Hide();
             MySqlConnection conn = databaseConnection();
             DataSet ds = new DataSet();
             conn.Open();
             MySqlCommand cmd;
             cmd = conn.CreateCommand();
-            cmd.CommandText = ($"SELECT*FROM admin_st1 WHERE category =\"{radioButton4.Text}\"");
+            cmd.CommandText = ($"SELECT*FROM admin_st WHERE category =\"{radioButton4.Text}\"");
             MySqlDataAdapter adapter = new MySqlDataAdapter(cmd);
             adapter.Fill(ds);
             conn.Close();
@@ -475,12 +414,21 @@ namespace pronownownownownow
 
         private void radioButton5_CheckedChanged(object sender, EventArgs e)
         {
+            linkLabel1.Text = "";
+            label8.Hide();
+            label7.Hide();
+            label6.Hide();
+            label10.Hide();
+            label9.Hide();
+            linkLabel1.Hide();
+            linkLabel2.Hide();
+            label2.Hide();
             MySqlConnection conn = databaseConnection();
             DataSet ds = new DataSet();
             conn.Open();
             MySqlCommand cmd;
             cmd = conn.CreateCommand();
-            cmd.CommandText = ($"SELECT*FROM admin_st1 WHERE category =\"{radioButton5.Text}\"");
+            cmd.CommandText = ($"SELECT*FROM admin_st WHERE category =\"{radioButton5.Text}\"");
             MySqlDataAdapter adapter = new MySqlDataAdapter(cmd);
             adapter.Fill(ds);
             conn.Close();
@@ -489,12 +437,21 @@ namespace pronownownownownow
 
         private void radioButton6_CheckedChanged(object sender, EventArgs e)
         {
+            linkLabel1.Text = "";
+            label8.Hide();
+            label7.Hide();
+            label6.Hide();
+            label10.Hide();
+            label9.Hide();
+            linkLabel1.Hide();
+            linkLabel2.Hide();
+            label2.Hide();
             MySqlConnection conn = databaseConnection();
             DataSet ds = new DataSet();
             conn.Open();
             MySqlCommand cmd;
             cmd = conn.CreateCommand();
-            cmd.CommandText = ($"SELECT*FROM admin_st1 WHERE category =\"{radioButton6.Text}\"");
+            cmd.CommandText = ($"SELECT*FROM admin_st WHERE category =\"{radioButton6.Text}\"");
             MySqlDataAdapter adapter = new MySqlDataAdapter(cmd);
             adapter.Fill(ds);
             conn.Close();
@@ -503,12 +460,21 @@ namespace pronownownownownow
 
         private void radioButton7_CheckedChanged(object sender, EventArgs e)
         {
+           // linkLabel1.clear();
+            label8.Hide();
+            label7.Hide();
+            label6.Hide();
+            label10.Hide();
+            label9.Hide();
+            linkLabel1.Hide();
+            linkLabel2.Hide();
+            label2.Hide();
             MySqlConnection conn = databaseConnection();
             DataSet ds = new DataSet();
             conn.Open();
             MySqlCommand cmd;
             cmd = conn.CreateCommand();
-            cmd.CommandText = ($"SELECT*FROM admin_st1 WHERE category =\"{radioButton7.Text}\"");
+            cmd.CommandText = ($"SELECT*FROM admin_st WHERE category =\"{radioButton7.Text}\"");
             MySqlDataAdapter adapter = new MySqlDataAdapter(cmd);
             adapter.Fill(ds);
             conn.Close();
@@ -520,75 +486,345 @@ namespace pronownownownownow
             showEquipment();
         }
 
+        int sumbtg=0;
+        string co = " ";
+        int sum = 0;
+        int sumb;
+        int sumbt;
         private void button3_Click(object sender, EventArgs e)
         {
-            if (textBox8.Text == "")
+            if (linkLabel1.Text != "")
             {
-                MessageBox.Show("กรุณากรอกID");
-            }
-            if (textBox8.Text != "")
-            {
-                showname();
-                MessageBox.Show("1.โปรดตรวจสอบชื่อของท่านในตาราาง\n2.ท่านสามารถคลิกที่รายชื่อของท่านแล้วกดปุ่มตรวจสอบเพื่ออตรวจสิทธิส่วนลด");
-            }
-        }
+                
+                co = ($"{label2.Text}");
+                int number = int.Parse(co);
+                sumbtg += 1;
+                sumbt += 1;
+                label15.Text = ($"{sumbtg}");
+                richTextBox1.SelectedText = ($"{linkLabel1.Text}.\n");
+                richTextBox2.SelectedText = ($"{label2.Text}  \n");
+                sum = sum + number;
+                sumb = sumb + number;
+                label11.Text = ($"{sum}");
+                Program.price = number.ToString();
+                //Bill item = new Bill()
+                //{
+                   //number = Program.price
+               // };
+               // allbill.Add(item);
 
-        private void dataGridView2_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-            textBox9.Text = dataGridView2.Rows[e.RowIndex].Cells["points"].FormattedValue.ToString();
-        }
+                
+               
+            }
+            
 
-        private void button4_Click(object sender, EventArgs e)
-        {
-            if (textBox9.Text == "")
-            {
-                MessageBox.Show("กรุณากรอกIDของท่านแล้วคลิกที่รายชื่อของท่านแล้วกดปุ่มตรวจสอบเพื่ออตรวจสิทธิส่วนลด");
-            }
-            if (textBox9.Text != "")
-            {
-                po2 = ($"{textBox9.Text}");
-                int poi2 = int.Parse(po2);
-                for (int i = 0; i < poi2; i += 1)
-                {
-                    summ = summ + 1;
-                }
-                MessageBox.Show($"คุณมีPointsทังหมด {poi2} คิดเป็นส่วนลดที่สามารถใช้ได้ทั้งหทด {summ} บาท");
-            }
+
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
-            textBox7.Clear();
+            panel5.Show();
         }
 
-        private void button6_Click(object sender, EventArgs e)
-        {
-            sum = 0;
-            textBox5.Clear();
-            richTextBox1.Text = "";
-            showname();
-        }
-
-        private void radioButton11_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        
-
-        private void textBox9_KeyPress(object sender, KeyPressEventArgs e)
-        {
-        }
-
-        private void textBox6_KeyPress(object sender, KeyPressEventArgs e)
+        private void textBox1_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar < '0' || e.KeyChar > '9')
             {
                 e.Handled = true;
             }
         }
+        private void textBox1_Click(object sender, EventArgs e)
+        {
+            textBox1.Text = "";
+        }
+
+        private void panel5_Click(object sender, EventArgs e)
+        {
+            if (textBox1.Text == "")
+            { textBox1.Text = "โปรดใส่จำนวณเงิน"; }
+        }
+
+        string pointsst;
+        int sumpoints = 0;
+        string m;
+        int xs = 0;
+        int chanums = 0;
+        string smenu;
+        string prisum;
+        int sumpmax;
+        private void button5_Click_1(object sender, EventArgs e)
+        {
+            
+            panel5.Show();
+            if (textBox1.Text != "โปรดใส่จำนวณเงิน" || textBox1.Text == " " )//จ่ายเงินธรรมดา
+            {
+                m = ($"{textBox1.Text}");
+                int mn = int.Parse(m);
+                if (checkBox2.Checked )
+                {
+                    m = ($"{textBox1.Text}");
+                    int n = int.Parse(m);
+
+                    pointsst = ($"{label4.Text}");           
+                    int pointsst1 = int.Parse(pointsst);
+
+                    sum = sum - pointsst1 * 2;
+                    if (n >= sum)
+                    {
+                        for (int i = 0; i < pointsst1; i += 1)
+                        {
+                            sumpoints = sumpoints + 1;
+                        }
+                        sum = sum - sumpoints;
+                        pointsst1 = pointsst1 - sumpoints;
+                        string connectionString = "datasource=127.0.0.1;port=3306;username=root;password=;database=project_c##;";
+                        string Query = "update users set points='" + ($"{pointsst1}") + "'WHERE name='" + ($"{nameusers}") + "';";
+                        MySqlConnection MyConn2 = new MySqlConnection(connectionString);
+                        MySqlCommand MyCommand2 = new MySqlCommand(Query, MyConn2);
+                        MySqlDataReader MyReader2;
+                        MyConn2.Open();
+                        MyReader2 = MyCommand2.ExecuteReader();
+                        while (MyReader2.Read())
+                        { }
+                        MyConn2.Close();
+                        sumpoints = 0;
+                        xs = 1;
+                    }
+                        
+                }
+
+
+                if (mn >= sum || xs == 1)
+                {
+                    
+
+
+                    if (checkBox1.Checked && checkBox2.Checked == false)
+                    {
+                        m = ($"{textBox1.Text}");
+                        int mgc = int.Parse(m);
+                        if (mgc > sum)
+                        {
+                            if (sum > 1000)
+                            {
+                                pointsst = ($"{label4.Text}");
+                                int pointsst1 = int.Parse(pointsst);
+                                for (int i = 0; i < sum; i += 10000)
+                                {
+                                    sumpoints = sumpoints + 2;
+                                }
+                                pointsst1 = pointsst1 + sumpoints;
+                                string connectionString = "datasource=127.0.0.1;port=3306;username=root;password=;database=project_c##;";
+                                string Query = "update users set points='" + ($"{pointsst1}") + "'WHERE name='" + ($"{nameusers}") + "';";
+                                MySqlConnection MyConn2 = new MySqlConnection(connectionString);
+                                MySqlCommand MyCommand2 = new MySqlCommand(Query, MyConn2);
+                                MySqlDataReader MyReader2;
+                                MyConn2.Open();
+                                MyReader2 = MyCommand2.ExecuteReader();
+                                MessageBox.Show($"{nameusers}Data Updated");
+                                while (MyReader2.Read())
+                                { }
+                                MyConn2.Close();
+                                sumpmax = sumpoints;
+                                sumpoints = 0;
+
+
+
+                            }
+
+                        }
+
+                        s = 2;
+                    }
+                    sumzen = ($"{textBox1.Text}");
+                    int chanum = int.Parse(sumzen);
+                    chanums = chanum;
+
+                    if (chanum > sum)
+                    {
+                        change = chanum - sum;
+
+
+                        MySqlConnection conn = databaseConnection();
+                        String sql = "INSERT INTO history ( Name,Product_List,date,	time,	price ) VALUES('" + nameusers + "','" + richTextBox1.Text + "','" + label19.Text + "','" + label18.Text + "','" + sum + "')";
+                        MySqlCommand cmd = new MySqlCommand(sql, conn);
+                        conn.Open();
+                        int rows = cmd.ExecuteNonQuery();
+                        conn.Close();
+                        
+                        MessageBox.Show("ดำเนินการเสร็จสิ้นขอบคุณที่ใช้บริการ");
+
+
+                        textBox1.Text = "โปรดใส่จำนวณเงิน";
+                        label4.Text = "";
+                        textBox1.Text = "โปรดใส่จำนวณเงิน";
+                        label11.Text = "0";
+                        smenu = richTextBox1.Text;
+                        prisum = richTextBox2.Text;
+                        richTextBox1.Text = "";
+                        richTextBox2.Text = "";
+                        sumbtg = 0;
+                        label15.Text = "0";
+                        sum = 0;
+                        printPreviewDialog1.Document = printDocument1;
+                        printPreviewDialog1.ShowDialog();
+                        
+
+
+
+                    }
+                }
+                if (mn < sum)
+                {
+                    mn = 0;
+                    MessageBox.Show("กรุณาใส่จำนวนเงินเพิ่ม");
+                }
+
+
+            }
+          
+        }
+
+        private void textBox1_Click_1(object sender, EventArgs e)
+        {
+            textBox1.Text = "";
+        }
+
+        private void panel5_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            textBox1.Text = "โปรดใส่จำนวณเงิน";
+            label11.Text = "0";
+            sum = 0;
+            richTextBox1.Text = "";
+            richTextBox2.Text = "";
+            sumbtg = 0;
+            label15.Text = "0";
+        }
+
+
+        private void textBox1_KeyPress_1(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar < '0' || e.KeyChar > '9')
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+          
+            MySqlConnection conn3 = databaseConnection();
+            conn3.Open();
+            MySqlCommand cmd = new MySqlCommand("SELECT points from users where name=@name", conn3);
+            cmd.Parameters.AddWithValue("@name", (nameusers));
+            MySqlDataReader da = cmd.ExecuteReader();
+            while (da.Read())
+            { label4.Text= da.GetValue(0).ToString(); }
+        }
+        int sump;
+        private void checkBox2_CheckedChanged(object sender, EventArgs e)
+        {
+            s = 1;
+            MySqlConnection conn3 = databaseConnection();
+            conn3.Open();
+            MySqlCommand cmd = new MySqlCommand("SELECT points from users where name=@name", conn3);
+            cmd.Parameters.AddWithValue("@name", (nameusers));
+            MySqlDataReader da = cmd.ExecuteReader();
+            while (da.Read())
+            { label4.Text = da.GetValue(0).ToString(); }
+            pointsst = ($"{label4.Text}");
+            int pointsst2 = int.Parse(pointsst);
+            MessageBox.Show($"คุณมีแต้ม {label4} ใช้แทนเงินสดได้ {pointsst2 * 2} บาท");
+            label11.Text = ($"{sum - pointsst2*2}");
+            sumb = sum-pointsst2 * 2;
+            sump = pointsst2;
+        }
+
+        private void timer1_Tick(object sender, EventArgs e)
+        {
+            label18.Text = DateTime.Now.ToLongTimeString();
+            label19.Text = DateTime.Now.ToLongDateString();
+            
+        }
+
+        int so;
+        List<Bill> allbill = new List<Bill>();
+        private void printDocument1_PrintPage(object sender, System.Drawing.Printing.PrintPageEventArgs e)
+        {
+            e.Graphics.DrawString("ใบเสร็จ", new Font("supermarket", 20, FontStyle.Bold), Brushes.Black, new Point(370, 50));
+            e.Graphics.DrawString("DODO FURNITUBE", new Font("supermarket", 24, FontStyle.Bold), Brushes.Black, new Point(260, 90));
+            e.Graphics.DrawString("พิมพ์เมื่อ " + System.DateTime.Now.ToString("dd/MM/yyyy HH : mm : ss น."), new Font("supermarket", 14, FontStyle.Regular), Brushes.Black, new PointF(80, 150));
+            e.Graphics.DrawString("ข้อมูลร้าน : Naruephat Nummongkun 0643079990", new Font("supermarket", 16, FontStyle.Regular), Brushes.Black, new Point(80, 180));
+            e.Graphics.DrawString("               วัดใต้ เลขที่ 19  ถนนแก่งสำโรง ", new Font("supermarket", 16, FontStyle.Regular), Brushes.Black, new Point(89, 210));
+            e.Graphics.DrawString("              ตำบลกาฬสินธุ์ อำเภอเมืองกาฬสินธุ์ จังหวัดกาฬสินธุ์ ", new Font("supermarket", 16, FontStyle.Regular), Brushes.Black, new Point(95, 240));
+            e.Graphics.DrawString("-----------------------------------------------------------------------------", new Font("supermarket", 16, FontStyle.Regular), Brushes.Black, new Point(80, 285));
+            e.Graphics.DrawString(" ลำกับที่                         ชื่อเมนู                                ราคา (บาท)", new Font("supermarket", 16, FontStyle.Regular), Brushes.Black, new Point(80, 315));
+            e.Graphics.DrawString("-----------------------------------------------------------------------------", new Font("supermarket", 16, FontStyle.Regular), Brushes.Black, new Point(80, 345));
+            int y = 345;
+            int number = 1;
+            int i = 0;
+            int num = 1;
+            e.Graphics.DrawString("" + smenu, new Font("supermarket", 14, FontStyle.Regular), Brushes.Black, new PointF(290, 390));
+            e.Graphics.DrawString("" + prisum, new Font("supermarket", 14, FontStyle.Regular), Brushes.Black, new PointF(560, 390));
+
+            for (i = 0; i < sumbt; i += 1)
+            {
+
+                e.Graphics.DrawString("" + num, new Font("supermarket", 14, FontStyle.Regular), Brushes.Black, new PointF(85, (y+46)));
+                num = num + 1;
+                y = y + 23;
+            }
+            number = number + 1;
+            so = chanums - sumb;
+            if (s==1)
+            {
+                e.Graphics.DrawString("-----------------------------------------------------------------------------", new Font("supermarket", 16, FontStyle.Regular), Brushes.Black, new Point(80, y + 40));
+                e.Graphics.DrawString("รวมทั้งสิ้น         " + sumb.ToString() + " บาท", new Font("supermarket", 16, FontStyle.Regular), Brushes.Black, new Point(370, (y + 30) + 45));
+                e.Graphics.DrawString("ชื่อผู้ให้บริการ         " + Program.nameus.ToString(), new Font("supermarket", 16, FontStyle.Bold), Brushes.Black, new Point(80, (y + 30) + 45));
+                e.Graphics.DrawString("ส่วนลดที่ใช้ไป        " + sump + " บาท", new Font("supermarket", 16, FontStyle.Regular), Brushes.Black, new Point(370, (((y + 30) + 45) + 45) + 45));
+                e.Graphics.DrawString("รับเงิน              " + chanums + " บาท", new Font("supermarket", 16, FontStyle.Regular), Brushes.Black, new Point(370, ((y + 30) + 45) + 45));
+                e.Graphics.DrawString("เงินทอน             " + so + " บาท", new Font("supermarket", 16, FontStyle.Regular), Brushes.Black, new Point(370, (((y + 30) + 45) + 45) + 90));
+                sumb = 0;
+
+            }
+
+            if (s == 2)
+            {
+                e.Graphics.DrawString("-----------------------------------------------------------------------------", new Font("supermarket", 16, FontStyle.Regular), Brushes.Black, new Point(80, y + 40));
+                e.Graphics.DrawString("รวมทั้งสิ้น         " + sumb.ToString() + " บาท", new Font("supermarket", 16, FontStyle.Regular), Brushes.Black, new Point(370, (y + 30) + 45));
+                e.Graphics.DrawString("ชื่อผู้ให้บริการ         " + Program.nameus.ToString(), new Font("supermarket", 16, FontStyle.Bold), Brushes.Black, new Point(80, (y + 30) + 45));
+                e.Graphics.DrawString("แต้มที่ได้             " + sumpmax + " บาท", new Font("supermarket", 16, FontStyle.Regular), Brushes.Black, new Point(370, (((y + 30) + 45) + 45) + 45));
+                e.Graphics.DrawString("รับเงิน              " + chanums + " บาท", new Font("supermarket", 16, FontStyle.Regular), Brushes.Black, new Point(370, ((y + 30) + 45) + 45));
+                e.Graphics.DrawString("เงินทอน             " + so + " บาท", new Font("supermarket", 16, FontStyle.Regular), Brushes.Black, new Point(370, (((y + 30) + 45) + 45) + 90));
+                sumb = 0;
+
+            }
+
+            if (s == 0)
+            {
+                e.Graphics.DrawString("-----------------------------------------------------------------------------", new Font("supermarket", 16, FontStyle.Regular), Brushes.Black, new Point(80, y +40));
+                e.Graphics.DrawString("รวมทั้งสิ้น         " + sumb.ToString() + " บาท", new Font("supermarket", 16, FontStyle.Regular), Brushes.Black, new Point(370, (y + 30) + 45));
+                e.Graphics.DrawString("ชื่อผู้ให้บริการ        " + Program.nameus.ToString(), new Font("supermarket", 16, FontStyle.Bold), Brushes.Black, new Point(80, (y + 30) + 45));
+                e.Graphics.DrawString("รับเงิน             " + chanums + " บาท", new Font("supermarket", 16, FontStyle.Regular), Brushes.Black, new Point(370, ((y + 30) + 45) + 45));
+                e.Graphics.DrawString("เงินทอน           " + change + " บาท", new Font("supermarket", 16, FontStyle.Regular), Brushes.Black, new Point(370, (((y + 30) + 45) + 45) + 45));
+                sumb = 0;
+                
+            }
+            s = 0;
+            sumbt = 0;
+        }
     }
+    
 }
+
+
+
+
 ###############################################################################/form4_หน้าผู้ดูแลร้านค้า/#######################################################################
 using System;
 using System.Collections.Generic;
@@ -607,7 +843,7 @@ namespace pronownownownownow
     {
         private MySqlConnection databaseConnection()
         {
-            string connectionString = "datasource=127.0.0.1;port=3306;username=root;password=;database=project_c#;";
+            string connectionString = "datasource=127.0.0.1;port=3306;username=root;password=;database=project_c##;";
 
             MySqlConnection conn = new MySqlConnection(connectionString);
 
@@ -622,13 +858,32 @@ namespace pronownownownownow
             MySqlCommand cmd;
 
             cmd = conn.CreateCommand();
-            cmd.CommandText = "SELECT*FROM admin_st1";
+            cmd.CommandText = "SELECT*FROM admin_st";
 
             MySqlDataAdapter adapter = new MySqlDataAdapter(cmd);
             adapter.Fill(ds);
 
             conn.Close();
             dataGridView1.DataSource = ds.Tables[0].DefaultView;
+            this.dataGridView1.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+        }
+        private void showhistory()
+        {
+            MySqlConnection conn = databaseConnection();
+            DataSet ds = new DataSet();
+            conn.Open();
+
+            MySqlCommand cmd;
+
+            cmd = conn.CreateCommand();
+            cmd.CommandText = "SELECT*FROM history";
+
+            MySqlDataAdapter adapter = new MySqlDataAdapter(cmd);
+            adapter.Fill(ds);
+
+            conn.Close();
+            dataGridView2.DataSource = ds.Tables[0].DefaultView;
+            this.dataGridView2.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
         }
         public Form4()
         {
@@ -637,6 +892,11 @@ namespace pronownownownownow
 
         private void Form4_Load(object sender, EventArgs e)
         {
+            label9.Show();
+            label10.Hide();
+            showhistory();
+            pictureBox3.Hide();
+            panel3.Hide();
             showEquipment();
         }
 
@@ -653,7 +913,7 @@ namespace pronownownownownow
             if (radioButton1.Checked)
             {
                 MySqlConnection conn = databaseConnection();
-                String sql = "INSERT INTO admin_st1 ( name,category,price,size,Path ) VALUES('" + namebnt.Text + "','" + radioButton1.Text + "','" + pricebnt.Text + "','" + sizebnt.Text + "','" + Pathbnt.Text + "')";
+                String sql = "INSERT INTO admin_st ( name,category,price,size,Path ) VALUES('" + namebnt.Text + "','" + radioButton1.Text + "','" + pricebnt.Text + "','" + sizebnt.Text + "','" + Pathbnt.Text + "')";
                 MySqlCommand cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue(textBox1.Text, Pathbnt.Text);
                 conn.Open();
@@ -673,7 +933,7 @@ namespace pronownownownownow
             if (radioButton2.Checked)
             {
                 MySqlConnection conn = databaseConnection();
-                String sql = "INSERT INTO admin_st1 ( name,category,price,size,Path ) VALUES('" + namebnt.Text + "','" + radioButton2.Text + "','" + pricebnt.Text + "','" + sizebnt.Text + "','" + Pathbnt.Text + "')";
+                String sql = "INSERT INTO admin_st ( name,category,price,size,Path ) VALUES('" + namebnt.Text + "','" + radioButton2.Text + "','" + pricebnt.Text + "','" + sizebnt.Text + "','" + Pathbnt.Text + "')";
                 MySqlCommand cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue(textBox1.Text, Pathbnt.Text);
                 conn.Open();
@@ -692,7 +952,7 @@ namespace pronownownownownow
             if (radioButton3.Checked)
             {
                 MySqlConnection conn = databaseConnection();
-                String sql = "INSERT INTO admin_st1 ( name,category,price,size,Path ) VALUES('" + namebnt.Text + "','" + radioButton3.Text + "','" + pricebnt.Text + "','" + sizebnt.Text + "','" + Pathbnt.Text + "')";
+                String sql = "INSERT INTO admin_st( name,category,price,size,Path ) VALUES('" + namebnt.Text + "','" + radioButton3.Text + "','" + pricebnt.Text + "','" + sizebnt.Text + "','" + Pathbnt.Text + "')";
                 MySqlCommand cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue(textBox1.Text, Pathbnt.Text);
                 conn.Open();
@@ -711,7 +971,7 @@ namespace pronownownownownow
             if (radioButton4.Checked)
             {
                 MySqlConnection conn = databaseConnection();
-                String sql = "INSERT INTO admin_st1 ( name,category,price,size,Path ) VALUES('" + namebnt.Text + "','" + radioButton4.Text + "','" + pricebnt.Text + "','" + sizebnt.Text + "','" + Pathbnt.Text + "')";
+                String sql = "INSERT INTO admin_st ( name,category,price,size,Path ) VALUES('" + namebnt.Text + "','" + radioButton4.Text + "','" + pricebnt.Text + "','" + sizebnt.Text + "','" + Pathbnt.Text + "')";
                 MySqlCommand cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue(textBox1.Text, Pathbnt.Text);
                 conn.Open();
@@ -730,7 +990,7 @@ namespace pronownownownownow
             if (radioButton5.Checked)
             {
                 MySqlConnection conn = databaseConnection();
-                String sql = "INSERT INTO admin_st1 ( name,category,price,size,Path ) VALUES('" + namebnt.Text + "','" + radioButton5.Text + "','" + pricebnt.Text + "','" + sizebnt.Text + "','" + Pathbnt.Text + "')";
+                String sql = "INSERT INTO admin_st ( name,category,price,size,Path ) VALUES('" + namebnt.Text + "','" + radioButton5.Text + "','" + pricebnt.Text + "','" + sizebnt.Text + "','" + Pathbnt.Text + "')";
                 MySqlCommand cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue(textBox1.Text, Pathbnt.Text);
                 conn.Open();
@@ -749,7 +1009,7 @@ namespace pronownownownownow
             if (radioButton6.Checked)
             {
                 MySqlConnection conn = databaseConnection();
-                String sql = "INSERT INTO admin_st1 ( name,category,price,size,Path ) VALUES('" + namebnt.Text + "','" + radioButton6.Text + "','" + pricebnt.Text + "','" + sizebnt.Text + "','" + Pathbnt.Text + "')";
+                String sql = "INSERT INTO admin_st( name,category,price,size,Path ) VALUES('" + namebnt.Text + "','" + radioButton6.Text + "','" + pricebnt.Text + "','" + sizebnt.Text + "','" + Pathbnt.Text + "')";
                 MySqlCommand cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue(textBox1.Text, Pathbnt.Text);
                 conn.Open();
@@ -774,7 +1034,7 @@ namespace pronownownownownow
             int selectedRow = dataGridView1.CurrentCell.RowIndex;
             int deleteId = Convert.ToInt32(dataGridView1.Rows[selectedRow].Cells["id"].Value);
             MySqlConnection conn = databaseConnection();
-            string sql = "DELETE FROM admin_st1 WHERE id = '" + deleteId + "'";
+            string sql = "DELETE FROM admin_st WHERE id = '" + deleteId + "'";
             MySqlCommand cmd = new MySqlCommand(sql, conn);
             conn.Open();
             int rows = cmd.ExecuteNonQuery();
@@ -798,7 +1058,7 @@ namespace pronownownownownow
                 int selectedRow = dataGridView1.CurrentCell.RowIndex;
                 int editId = Convert.ToInt32(dataGridView1.Rows[selectedRow].Cells["id"].Value);
                 MySqlConnection conn = databaseConnection();
-                string sql = "UPDATE admin_st1 SET  name='" + namebnt.Text + "',category='" + radioButton1.Text + "' ,price='" + pricebnt.Text + "',size='" + sizebnt.Text + "',Path='" + Pathbnt.Text + "'WHERE id='" + editId + "'";
+                string sql = "UPDATE admin_st SET  name='" + namebnt.Text + "',category='" + radioButton1.Text + "' ,price='" + pricebnt.Text + "',size='" + sizebnt.Text + "',Path='" + Pathbnt.Text + "'WHERE id='" + editId + "'";
                 MySqlCommand cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue(textBox1.Text, Pathbnt.Text);
                 conn.Open();
@@ -819,7 +1079,7 @@ namespace pronownownownownow
                 int selectedRow = dataGridView1.CurrentCell.RowIndex;
                 int editId = Convert.ToInt32(dataGridView1.Rows[selectedRow].Cells["id"].Value);
                 MySqlConnection conn = databaseConnection();
-                string sql = "UPDATE admin_st1 SET  name='" + namebnt.Text + "',category='" + radioButton2.Text + "' ,price='" + pricebnt.Text + "',size='" + sizebnt.Text + "',Path='" + Pathbnt.Text + "'WHERE id='" + editId + "'";
+                string sql = "UPDATE admin_st SET  name='" + namebnt.Text + "',category='" + radioButton2.Text + "' ,price='" + pricebnt.Text + "',size='" + sizebnt.Text + "',Path='" + Pathbnt.Text + "'WHERE id='" + editId + "'";
                 MySqlCommand cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue(textBox1.Text, Pathbnt.Text);
                 conn.Open();
@@ -840,7 +1100,7 @@ namespace pronownownownownow
                 int selectedRow = dataGridView1.CurrentCell.RowIndex;
                 int editId = Convert.ToInt32(dataGridView1.Rows[selectedRow].Cells["id"].Value);
                 MySqlConnection conn = databaseConnection();
-                string sql = "UPDATE admin_st1 SET  name='" + namebnt.Text + "',category='" + radioButton3.Text + "' ,price='" + pricebnt.Text + "',size='" + sizebnt.Text + "',Path='" + Pathbnt.Text + "'WHERE id='" + editId + "'";
+                string sql = "UPDATE admin_st SET  name='" + namebnt.Text + "',category='" + radioButton3.Text + "' ,price='" + pricebnt.Text + "',size='" + sizebnt.Text + "',Path='" + Pathbnt.Text + "'WHERE id='" + editId + "'";
                 MySqlCommand cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue(textBox1.Text, Pathbnt.Text);
                 conn.Open();
@@ -861,7 +1121,7 @@ namespace pronownownownownow
                 int selectedRow = dataGridView1.CurrentCell.RowIndex;
                 int editId = Convert.ToInt32(dataGridView1.Rows[selectedRow].Cells["id"].Value);
                 MySqlConnection conn = databaseConnection();
-                string sql = "UPDATE admin_st1 SET  name='" + namebnt.Text + "',category='" + radioButton4.Text + "' ,price='" + pricebnt.Text + "',size='" + sizebnt.Text + "',Path='" + Pathbnt.Text + "'WHERE id='" + editId + "'";
+                string sql = "UPDATE admin_st SET  name='" + namebnt.Text + "',category='" + radioButton4.Text + "' ,price='" + pricebnt.Text + "',size='" + sizebnt.Text + "',Path='" + Pathbnt.Text + "'WHERE id='" + editId + "'";
                 MySqlCommand cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue(textBox1.Text, Pathbnt.Text);
                 conn.Open();
@@ -882,7 +1142,7 @@ namespace pronownownownownow
                 int selectedRow = dataGridView1.CurrentCell.RowIndex;
                 int editId = Convert.ToInt32(dataGridView1.Rows[selectedRow].Cells["id"].Value);
                 MySqlConnection conn = databaseConnection();
-                string sql = "UPDATE admin_st1 SET  name='" + namebnt.Text + "',category='" + radioButton5.Text + "' ,price='" + pricebnt.Text + "',size='" + sizebnt.Text + "',Path='" + Pathbnt.Text + "'WHERE id='" + editId + "'";
+                string sql = "UPDATE admin_st SET  name='" + namebnt.Text + "',category='" + radioButton5.Text + "' ,price='" + pricebnt.Text + "',size='" + sizebnt.Text + "',Path='" + Pathbnt.Text + "'WHERE id='" + editId + "'";
                 MySqlCommand cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue(textBox1.Text, Pathbnt.Text);
                 conn.Open();
@@ -903,7 +1163,7 @@ namespace pronownownownownow
                 int selectedRow = dataGridView1.CurrentCell.RowIndex;
                 int editId = Convert.ToInt32(dataGridView1.Rows[selectedRow].Cells["id"].Value);
                 MySqlConnection conn = databaseConnection();
-                string sql = "UPDATE admin_st1 SET  name='" + namebnt.Text + "',category='" + radioButton6.Text + "' ,price='" + pricebnt.Text + "',size='" + sizebnt.Text + "',Path='" + Pathbnt.Text + "'WHERE id='" + editId + "'";
+                string sql = "UPDATE admin_st SET  name='" + namebnt.Text + "',category='" + radioButton6.Text + "' ,price='" + pricebnt.Text + "',size='" + sizebnt.Text + "',Path='" + Pathbnt.Text + "'WHERE id='" + editId + "'";
                 MySqlCommand cmd = new MySqlCommand(sql, conn);
                 cmd.Parameters.AddWithValue(textBox1.Text, Pathbnt.Text);
                 conn.Open();
@@ -920,6 +1180,50 @@ namespace pronownownownownow
                 }
             }
         }
+
+        private void pictureBox2_Click(object sender, EventArgs e)
+        {
+            if(textBox2.Text!="")
+            {
+                MySqlConnection conn = databaseConnection();
+                DataSet ds = new DataSet();
+                conn.Open();
+                MySqlCommand cmd;
+                cmd = conn.CreateCommand();
+                cmd.CommandText = ($"SELECT*FROM history WHERE Name =\"{textBox2.Text}\"");
+                MySqlDataAdapter adapter = new MySqlDataAdapter(cmd);
+                adapter.Fill(ds);
+                conn.Close();
+                dataGridView2.DataSource = ds.Tables[0].DefaultView;
+            }
+            else
+            {
+                showhistory();
+            }
+           
+        }
+
+        private void pictureBox3_Click(object sender, EventArgs e)
+        {
+            label9.Show();
+            label10.Hide();
+            pictureBox3.Hide();
+            panel3.Hide();
+            pictureBox4.Show();
+        }
+
+        private void pictureBox4_Click(object sender, EventArgs e)
+        {
+            label9.Hide();
+            label10.Show();
+            pictureBox3.Show();
+            panel3.Show();
+            pictureBox4.Hide();
+        }
+
+        private void label10_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
-
